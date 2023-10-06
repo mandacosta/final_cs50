@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Log In
+{% endblock %}
+
+{% block main %}
+<div class="initial">
+    <h1 class="h3 mb-3 fw-normal">Login into SECRET!</h1>
+
+    <form action="" class="form initial">
+        <div class="form-floating">
+            <input class="form-control" type="email" name="email" placeholder="name@example.com">
+            <label for="email">Email</label>
+        </div>
+
+        <div class="form-floating">
+            <input class="form-control passlogin" type="password" name="password" placeholder="Your password">
+            <label for="password">Password</label>
+            <i class="bi bi-eye-fill eye" onclick="togglePassword('passlogin', 'bi-eye-fill' ,'bi-eye-slash-fill')"></i>
+            <i class="bi bi-eye-slash-fill eye hide" onclick="togglePassword('passlogin', 'bi-eye-fill' ,'bi-eye-slash-fill')"></i>
+        </div>
+
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Login</button>
+
+        <a href="/register">Or register!</a>
+    </form>
+</div>
+{% endblock %}

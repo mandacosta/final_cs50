@@ -1,0 +1,62 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Register
+{% endblock %}
+
+{% block main %}
+<div class="initial">
+    <h1 class="h3 mb-3 fw-normal">Register to SECRET!</h1>
+
+    <form action="/register" method="post" class="form initial">
+        <div class="form-floating">
+            <input type="text" name="name" placeholder="Name" class="form-control">
+            <label for="name">Full name</label>
+        </div>
+
+        <div class="form-floating">
+            <input type="email" name="email" placeholder="example@example.com" class="form-control">
+            <label for="email">Email</label>
+        </div>
+
+
+        <div class="form-floating">
+            <select name="gender" id="" class="form-select">
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+                <option value="O">Other</option>
+            </select>
+            <label for="gender">Gender</label>
+        </div>
+
+        <div class="form-floating">
+            <input type="date" class="form-control" name="birthdate">
+            <label for="birth">Birthday</label>
+        </div>
+
+        <div class="form-floating">
+            <input type="password" class="form-control passRegister" placeholder="Your Password" name="password">
+            <label for="password">Password</label>
+            <i class="bi bi-eye-fill eye eyeR" onclick="togglePassword('passRegister', 'eyeR' ,'eyeRH')"></i>
+            <i class="bi bi-eye-slash-fill eye eyeRH hide" onclick="togglePassword('passRegister', 'eyeR' ,'eyeRH')"></i>
+        </div>
+
+        <div class="form-floating">
+            <input type="password" class="form-control passConfirm" placeholder="Confirm Password" name="confirmPassword">
+            <label for="password_conform">Confirm password</label>
+            <i class="bi bi-eye-fill eye eyeC" onclick="togglePassword('passConfirm', 'eyeC' ,'eyeCH')"></i>
+            <i class="bi bi-eye-slash-fill eye eyeCH hide" onclick="togglePassword('passConfirm', 'eyeC' ,'eyeCH')"></i>
+        </div>
+
+
+
+
+
+        <button class="w-100 btn btn-lg btn-primary" type="submit">Send</button>
+
+        <a href="/">Or login!</a>
+    </form>
+
+
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+.hide{
+    display: none;
+}
+
+.initial{
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+}
+
+.form.initial{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.eye{
+    font-size: 30px;
+    position: absolute;
+    top: 7px;
+    right: 21px;
+    cursor: pointer;
+}
+
+.alert{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 20px 30px;
+    font-size: 17px;
+}
+
+.toastElement {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.toastElement.show {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+    }
+    to {
+        transform: translateX(-50%);
+    }
+}
