@@ -1,6 +1,7 @@
 from flask import Flask, session, render_template, request, g, redirect
 from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
+from helpers import login_required
 
 app = Flask(__name__)
 
@@ -13,6 +14,7 @@ def after_request(response):
     response.headers["Expires"] = 0
     response.headers["Pragma"] = "no-cache"
     return response
+
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -31,11 +33,19 @@ def register():
             text = f"Error: Email already being used."
             return render_template("register.html", erro=True, text=text)
         else:
+            password = request.form.get("password")
+            confirmPassword = request.form.get("confirmPassword")
+
+            if not password == confirmPassword:
+                text = f"Error: Password confirmation does not match."
+                return render_template("register.html", erro=True, text=text)
+            
             name = request.form.get("name")
             email = request.form.get("email")
             birth = request.form.get("birthdate")
             gender = request.form.get("gender")
             hash = generate_password_hash(request.form.get("password"))
+
             cursor.execute("INSERT INTO users (name, email, birth, gender, password_hash) VALUES (?, ?, ?, ?, ?)", (name, email, birth, gender, hash))
             db.commit()
             user_id = cursor.lastrowid
@@ -46,22 +56,51 @@ def register():
         return render_template("register.html")
     
 
-@app.route('/')
+@app.route("/", methods=["GET", "POST"])
 def login():
     db = get_db()
     cursor = db.cursor()
-    # users = cursor.execute("select * from users").fetchall()
-    # users = cursor.execute("select * from users").fetchall()
-    # users = cursor.execute("select * from users").fetchall()
-    return render_template("login.html")
+    session.clear()
+
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+
+        if not (email or password):
+            text = f"Error: Must provide email and password"
+            return render_template("login.html", erro=True, text=text)
+
+        cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
+        user = cursor.fetchone()
+
+        if not user:
+            print("USUÁRIO NÃO EXISTE")
+            text = f"Error: User does not exists or password is incorret"
+            return render_template("login.html", erro=True, text=text)
+
+        hash = user["password_hash"]
+        print("HASH: ", hash)
+        print("ENCONTRADO", user["email"])
+
+        if not check_password_hash(hash, password):
+            print("SENHA INCORRETA")
+            text = f"Error: User does not exists or password is incorret"
+            return render_template("login.html", erro=True, text=text)
+        
+        session["user_id"] = user["id"]
+
+        return redirect("/home")
+    else:
+        return render_template("login.html")
 
 
 @app.route('/home')
+@login_required
 def home():
     db = get_db()
     cursor = db.cursor()
-    return render_template("home.html")
-
+    id = session["user_id"]
+    return render_template("home.html", id=id, email='teste')
 
 
 def get_db():
