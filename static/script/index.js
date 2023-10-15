@@ -23,7 +23,3 @@ function togglePassword (input_class, clas_show, clas_hide){
 
     return
 }
-
-
-
-

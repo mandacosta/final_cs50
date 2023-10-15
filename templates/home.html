@@ -5,8 +5,62 @@
 {% endblock %}
 
 {% block main %}
-    <div>
-        <span>EMAIL: {{ email }}</span>
-        <span>ID: {{ id }}</span>
+    <div class="container_home">
+        <div class="search_groups">
+            <form class="d-flex search_groups_search" role="search" action="/home" method="post">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+            <div class="d-flex search_groups_filter" style="width: 20%;">
+                <form action="/home" method="post">
+                    <input type="text" name="search" hidden value="groups_i_own">
+                    <button type="submit" style="width: 100%;margin-left: 10px;" class="btn-tag" >I own</button>
+                </form>
+                <form action="/home" method="post">
+                    <input type="text" name="search" hidden value="groups_iam_in">
+                    <button type="submit" style="width: 100%;margin-left: 10px;" class="btn-tag" >I'm in</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="groups">
+            <div class="card" style="width: 18rem;">
+                <img src="https://comprarbandeira.com.br/wp-content/uploads/2021/07/brasil_orgulho.png" class="card-img-top" alt="">
+                <div class="card-body">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+            <div class="card" style="width: 18rem;">
+                <img src="https://static.wikia.nocookie.net/disney/images/3/38/Mike1.png/revision/latest/smart/width/250/height/250?cb=20150415021940&path-prefix=pt-br" class="card-img-top" alt="">
+                <div class="card-body">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+            <div class="card" style="width: 18rem;">
+                <img src="https://static.wikia.nocookie.net/disney/images/3/38/Mike1.png/revision/latest/smart/width/250/height/250?cb=20150415021940&path-prefix=pt-br" class="card-img-top" alt="">
+                <div class="card-body">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+            <div class="card" style="width: 18rem;">
+                <img src="https://static.wikia.nocookie.net/disney/images/3/38/Mike1.png/revision/latest/smart/width/250/height/250?cb=20150415021940&path-prefix=pt-br" class="card-img-top" alt="">
+                <div class="card-body">
+                  <h5 class="card-title">Card title</h5>
+                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        </div>
+        
     </div>
 {% endblock %}

@@ -42,6 +42,78 @@
     transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
+.header{
+    margin: 0 auto !important;
+    width: 100%;
+    max-width: 1000px;
+    display: flex;
+    justify-content: space-between;
+    color: var(--bs-cyan);
+    padding: 20px 0;
+}
+
+.navbar-nav{
+    color: var(--bs-gray-dark);
+}
+
+.profile{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--bs-white);
+}
+
+.offcanvas{
+    color: var(--bs-white) !important;
+}
+
+.menu_box{
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.container_home{
+    width: 100%;
+    margin: 100px auto 0px auto;
+    max-width: 1000px;
+}
+
+.search_groups{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.search_groups_search{
+    width: 60%;
+}
+
+.btn-tag {
+    border: none;
+    border-radius: 20px;
+    padding: 10px 15px;
+    background-color: var(--bs-indigo);
+    color: var(--bs-white);
+    font-weight: 600;
+    text-wrap: nowrap;
+}
+
+.btn-tag:hover{
+    background-color: var(--bs-purple);
+}
+
+.groups{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 20px;
+    margin-top: 50px;
+}
+
 @keyframes slideIn {
     from {
         transform: translateX(100%);

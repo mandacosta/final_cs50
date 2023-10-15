@@ -58,6 +58,7 @@ def register():
 
 @app.route("/", methods=["GET", "POST"])
 def login():
+    return redirect("/home")
     db = get_db()
     cursor = db.cursor()
     session.clear()
@@ -94,13 +95,25 @@ def login():
         return render_template("login.html")
 
 
-@app.route('/home')
-@login_required
+@app.route('/home', methods=["GET", "POST"])
 def home():
     db = get_db()
     cursor = db.cursor()
-    id = session["user_id"]
-    return render_template("home.html", id=id, email='teste')
+    # id = session["user_id"]
+    id = 1
+    cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
+    user = cursor.fetchone()
+
+    if request.method == 'GET':
+        return render_template("home.html", nav=True, user=user)
+    
+    else:
+        search = request.form.get("search")
+        print("search", search)
+        return render_template("home.html", nav=True, user=user)
+
+        
+        
 
 
 def get_db():
