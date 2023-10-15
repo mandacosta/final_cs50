@@ -114,6 +114,26 @@
     margin-top: 50px;
 }
 
+.btn-cards.two > button{
+    width: 49%;
+}
+
+.btn-cards.one > button{
+    width: 100%;
+}
+
+.body_modal_new_group{
+    height: 400px;
+}
+
+.new_group_form{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 10px;
+}
+
 @keyframes slideIn {
     from {
         transform: translateX(100%);

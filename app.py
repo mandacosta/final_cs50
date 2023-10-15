@@ -105,7 +105,24 @@ def home():
     user = cursor.fetchone()
 
     if request.method == 'GET':
-        return render_template("home.html", nav=True, user=user)
+        cursor.execute("SELECT * FROM groups")
+        groups = cursor.fetchall()
+        cursor.execute("SELECT * FROM groups_users")
+        participants_all = cursor.fetchall()
+
+        for group in groups:
+            group['participants'] = []
+            group['owner'] = False
+            group['member'] = False
+            if group['owner_id'] == id:
+                group['owner'] = True
+            for participant in participants_all:
+                if participant['group_id'] == group['id']:
+                    group['participants'].append(participant['user_id'])
+                if participant['user_id'] == id:
+                    group['member'] = True
+
+        return render_template("home.html", nav=True, user=user, groups=groups)
     
     else:
         search = request.form.get("search")
@@ -113,9 +130,6 @@ def home():
         return render_template("home.html", nav=True, user=user)
 
         
-        
-
-
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:

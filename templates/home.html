@@ -21,46 +21,92 @@
                     <button type="submit" style="width: 100%;margin-left: 10px;" class="btn-tag" >I'm in</button>
                 </form>
             </div>
+
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                Create New Group!
+            </button>
+
         </div>
 
+
         <div class="groups">
-            <div class="card" style="width: 18rem;">
-                <img src="https://comprarbandeira.com.br/wp-content/uploads/2021/07/brasil_orgulho.png" class="card-img-top" alt="">
-                <div class="card-body">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
+
+            {% if groups %}
+                {% for group in groups %}
+
+                <div class="card" style="width: 18rem;">
+                    <img src="https://as1.ftcdn.net/v2/jpg/05/82/92/76/1000_F_582927676_eu8RhlG7eKNwwAvljz7sTdJEpVtYGcpb.jpg" class="card-img-top" alt="">
+                    <div class="card-body">
+                      <h5 class="card-title">Card title</h5>
+                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+
+                      {% if group['owner'] or group['member']%}
+                        <div class="btn-cards one">
+                            <button class="btn btn-warning">Enter</button>
+                        </div>
+
+                        {% else %}
+                        <div class="btn-cards two">
+                            <button class="btn btn-info">View</button>
+                            <button class="btn btn-success">Join</button>
+                        </div>
+
+                      {% endif %}
+
+                    </div>
                 </div>
-            </div>
-            <div class="card" style="width: 18rem;">
-                <img src="https://static.wikia.nocookie.net/disney/images/3/38/Mike1.png/revision/latest/smart/width/250/height/250?cb=20150415021940&path-prefix=pt-br" class="card-img-top" alt="">
-                <div class="card-body">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
-            <div class="card" style="width: 18rem;">
-                <img src="https://static.wikia.nocookie.net/disney/images/3/38/Mike1.png/revision/latest/smart/width/250/height/250?cb=20150415021940&path-prefix=pt-br" class="card-img-top" alt="">
-                <div class="card-body">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
-            <div class="card" style="width: 18rem;">
-                <img src="https://static.wikia.nocookie.net/disney/images/3/38/Mike1.png/revision/latest/smart/width/250/height/250?cb=20150415021940&path-prefix=pt-br" class="card-img-top" alt="">
-                <div class="card-body">
-                  <h5 class="card-title">Card title</h5>
-                  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
-                </div>
-            </div>
+
+                {% endfor %}
+
+            {% else %}
+                <div>No groups yet!</div>
+            {% endif %}
+
         </div>
         
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Create a New Group</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" class="body_modal_new_group">
+                    <form action="/new_group" method="post" class="new_group_form">
+                        <div class="form-floating">
+                            <input class="form-control" type="text" name="name" placeholder="Type a name">
+                            <label for="name">Name</label>
+                        </div>
+
+                        <div class="form-floating">
+                            <textarea class="form-control" name="description" placeholder="Describe your group" id="" cols="30" rows="10">
+                            </textarea>
+                            <label for="name">Description</label>
+                        </div>
+
+                        <div class="form-floating">
+                            <input class="form-control" type="text" name="image" placeholder="URL">
+                            <label for="name">Image</label>
+                        </div>
+
+                        <div class="form-floating">
+                            <input type="date" class="form-control" name="event_date">
+                            <label for="birth">Event date</label>
+                        </div>
+
+                        <div class="form-floating">
+                            <input type="date" class="form-control" name="draw_date">
+                            <label for="birth">Draw date</label>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+            </div>
+        </div>
     </div>
 {% endblock %}
