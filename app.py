@@ -110,7 +110,9 @@ def home():
         cursor.execute("SELECT * FROM groups_users")
         participants_all = cursor.fetchall()
 
-        for group in groups:
+        list_of_groups = [dict(row) for row in groups]
+
+        for group in list_of_groups:
             group['participants'] = []
             group['owner'] = False
             group['member'] = False
@@ -122,12 +124,42 @@ def home():
                 if participant['user_id'] == id:
                     group['member'] = True
 
-        return render_template("home.html", nav=True, user=user, groups=groups)
+        print("LISTA DE GRUPOS", list_of_groups)
+
+        return render_template("home.html", nav=True, user=user, groups=list_of_groups)
     
     else:
         search = request.form.get("search")
         print("search", search)
         return render_template("home.html", nav=True, user=user)
+
+
+@app.route('/new_group', methods=["GET", "POST"])
+def new_group():
+    db = get_db()
+    cursor = db.cursor()
+    # id = session["user_id"]
+    id = 1
+    cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
+    user = cursor.fetchone()
+
+    if request.method == 'POST':
+
+        for input, value in request.form.items():
+            if not value:
+                text = f"Error: {input} must me provided"
+                return render_template("home.html", erro=True, text=text, nav=True, user=user)
+        name = request.form.get("name")
+        description = request.form.get("description")
+        image_url = request.form.get("image_url")
+        event_date = request.form.get("event_date")
+        draw_date = request.form.get("draw_date")
+
+        print(request.form.items())
+        return redirect("/home")
+    
+    else:
+        return redirect("/home")
 
         
 def get_db():

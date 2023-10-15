@@ -36,10 +36,14 @@
                 {% for group in groups %}
 
                 <div class="card" style="width: 18rem;">
-                    <img src="https://as1.ftcdn.net/v2/jpg/05/82/92/76/1000_F_582927676_eu8RhlG7eKNwwAvljz7sTdJEpVtYGcpb.jpg" class="card-img-top" alt="">
+                    {% if group['image_url'] %}
+                        <img src="{{group['image_url']}}" class="card-img-top" alt="group_picture">
+                    {% else %}
+                        <img src="https://as1.ftcdn.net/v2/jpg/06/50/41/82/1000_F_650418284_gH1jJH1H9A0ErBxosY1f6ofyPrnCiFie.jpg" class="card-img-top" alt="">
+                    {% endif %}
                     <div class="card-body">
-                      <h5 class="card-title">Card title</h5>
-                      <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                      <h5 class="card-title">{{group['name'] }}</h5>
+                      <p class="card-text">{{ group['description'] }}</p>
 
                       {% if group['owner'] or group['member']%}
                         <div class="btn-cards one">
@@ -79,15 +83,13 @@
                             <label for="name">Name</label>
                         </div>
 
-                        <div class="form-floating">
-                            <textarea class="form-control" name="description" placeholder="Describe your group" id="" cols="30" rows="10">
-                            </textarea>
-                            <label for="name">Description</label>
+                        <div class="mb-3">
+                            <textarea class="form-control" id="description" rows="3" name="description" placeholder="Describe your group"></textarea>
                         </div>
 
                         <div class="form-floating">
                             <input class="form-control" type="text" name="image" placeholder="URL">
-                            <label for="name">Image</label>
+                            <label for="name">Image URL</label>
                         </div>
 
                         <div class="form-floating">
@@ -99,11 +101,8 @@
                             <input type="date" class="form-control" name="draw_date">
                             <label for="birth">Draw date</label>
                         </div>
+                        <button type="submit" class="btn btn-primary">Create</button>
                     </form>
-                </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
             </div>
