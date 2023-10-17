@@ -1,7 +1,7 @@
 from flask import Flask, session, render_template, request, g, redirect
 from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
-from helpers import login_required
+from helpers import login_required, formate_list_of_groups, date_now
 
 app = Flask(__name__)
 
@@ -100,7 +100,7 @@ def home():
     db = get_db()
     cursor = db.cursor()
     # id = session["user_id"]
-    id = 1
+    id = 2
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     user = cursor.fetchone()
 
@@ -109,29 +109,37 @@ def home():
         groups = cursor.fetchall()
         cursor.execute("SELECT * FROM groups_users")
         participants_all = cursor.fetchall()
+        list_of_groups = formate_list_of_groups(groups, participants_all, id)
 
-        list_of_groups = [dict(row) for row in groups]
-
-        for group in list_of_groups:
-            group['participants'] = []
-            group['owner'] = False
-            group['member'] = False
-            if group['owner_id'] == id:
-                group['owner'] = True
-            for participant in participants_all:
-                if participant['group_id'] == group['id']:
-                    group['participants'].append(participant['user_id'])
-                if participant['user_id'] == id:
-                    group['member'] = True
-
-        print("LISTA DE GRUPOS", list_of_groups)
+        print("LISTA DE GRUPOS GET", list_of_groups)
 
         return render_template("home.html", nav=True, user=user, groups=list_of_groups)
     
     else:
         search = request.form.get("search")
+        groups = []
         print("search", search)
-        return render_template("home.html", nav=True, user=user)
+        if not search:
+            cursor.execute("SELECT * FROM groups")
+            groups = cursor.fetchall()
+        elif search == 'groups_i_own':
+            cursor.execute("SELECT * FROM groups WHERE owner_id = ?", (id,))
+            groups = cursor.fetchall()
+        elif search == 'groups_iam_in':
+            cursor.execute("SELECT a.* FROM groups a LEFT JOIN groups_users b ON a.id = b.group_id WHERE b.user_id = ?", (id,))
+            groups = cursor.fetchall()
+        else:
+            cursor.execute("SELECT * FROM groups WHERE name LIKE ?", ('%' + search + '%',))
+            groups = cursor.fetchall()
+        
+        cursor.execute("SELECT * FROM groups_users")
+        participants_all = cursor.fetchall()
+        list_of_groups = formate_list_of_groups(groups, participants_all, id)
+
+        print("LISTA DE GRUPOS POST", list_of_groups)
+
+        return render_template("home.html", nav=True, user=user, groups=list_of_groups)
+
 
 
 @app.route('/new_group', methods=["GET", "POST"])
@@ -139,9 +147,10 @@ def new_group():
     db = get_db()
     cursor = db.cursor()
     # id = session["user_id"]
-    id = 1
+    id = 2
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     user = cursor.fetchone()
+    date = date_now()
 
     if request.method == 'POST':
 
@@ -155,7 +164,12 @@ def new_group():
         event_date = request.form.get("event_date")
         draw_date = request.form.get("draw_date")
 
-        print(request.form.items())
+        cursor.execute("INSERT INTO groups (name, description, image_url, event_date, draw_date, creation_date, owner_id) VALUES (?, ?, ?, ?, ?, ?, ?)", (name, description, image_url, event_date, draw_date, date, id))
+        db.commit()
+        group_id = cursor.lastrowid
+
+        cursor.execute("INSERT INTO groups_users (group_id, user_id, addtion_date) VALUES (?, ?, ?)", (group_id, id, date))
+        db.commit()
         return redirect("/home")
     
     else:

@@ -24,6 +24,7 @@ cursor.execute("""
         creation_date TEXT,
         event_date TEXT,
         draw_date TEXT,
+        image_url TEXT,
         FOREIGN KEY (owner_id) REFERENCES users(id)
     )
 """)

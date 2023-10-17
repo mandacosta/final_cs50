@@ -134,6 +134,34 @@
     gap: 10px;
 }
 
+.card-text{
+    height: 48px;
+    overflow: hidden;
+}
+
+.card > img{
+    height: 190px;
+}
+
+.info_grupo{
+    position:fixed;
+    z-index: 10;
+    top:0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.103);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.fundo_branco{
+    width: 50%;
+    height: 70%;
+    background-color: white;
+}
+
 @keyframes slideIn {
     from {
         transform: translateX(100%);
