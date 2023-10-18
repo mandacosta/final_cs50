@@ -1,4 +1,4 @@
-from flask import Flask, session, render_template, request, g, redirect
+from flask import Flask, session, render_template, request, g, redirect, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
 from helpers import login_required, formate_list_of_groups, date_now
@@ -100,7 +100,7 @@ def home():
     db = get_db()
     cursor = db.cursor()
     # id = session["user_id"]
-    id = 2
+    id = 1
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     user = cursor.fetchone()
 
@@ -147,7 +147,7 @@ def new_group():
     db = get_db()
     cursor = db.cursor()
     # id = session["user_id"]
-    id = 2
+    id = 1
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     user = cursor.fetchone()
     date = date_now()
@@ -175,7 +175,46 @@ def new_group():
     else:
         return redirect("/home")
 
-        
+
+@app.route('/modal_group/<group_id>', methods=["GET"])
+def modal_group(group_id):
+    db = get_db()
+    cursor = db.cursor()
+    cursor.execute("SELECT a.id, a.name, a.draw_date, b.user_id, c.name as fullname, c.email FROM groups a LEFT JOIN groups_users b ON a.id = b.group_id LEFT JOIN users c ON b.user_id = c.id WHERE a.id = ?", (group_id, ))
+    group_users = cursor.fetchall()
+
+    if group_users:
+        participants = [{'name': row['fullname'], 'email': row['email']} for row in group_users if row['user_id']]
+
+        group_data = {
+            'participants': participants,
+            'name': group_users[0]['name'],
+            'draw_date': group_users[0]['draw_date']
+        }
+        return jsonify(group_data)
+    else:
+        return jsonify({'error': 'Grupo não encontrado'})
+
+
+@app.route('/join_group', methods=['GET', 'POST'])
+def join_group():
+    db = get_db()
+    cursor = db.cursor()
+    # id = session["user_id"]
+    id = 1
+    cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
+    date = date_now()
+
+    if request.method == 'POST':
+        group_id = request.form.get("group_id")
+        cursor.execute("INSERT INTO groups_users (user_id, group_id, addtion_date) VALUES (?, ?, ?)", (id, group_id, date))
+        db.commit()
+        return redirect("/home")
+    
+    else:
+        return redirect("/home")
+
+
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:

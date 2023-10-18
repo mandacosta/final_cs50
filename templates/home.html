@@ -52,8 +52,11 @@
 
                         {% else %}
                         <div class="btn-cards two">
-                            <button class="btn btn-info">View</button>
-                            <button class="btn btn-success">Join</button>
+                            <button class="btn btn-info" onclick="openModalGroup({{ group['id'] }})">View</button>
+                            <form action="/join_group" method="post">
+                                <input type="text" name="group_id" hidden value="{{ group['id'] }}">
+                                <button type="submit" class="btn btn-success">Join</button>
+                            </form>
                         </div>
 
                       {% endif %}
@@ -108,13 +111,10 @@
             </div>
         </div>
 
-        {% if grupo_view %}
-            <div class="info_grupo">
-                <div class="fundo_branco">
-                    aqui vai a descrição do grupo
-                </div>
+        <div class="hide info_grupo" id="modal_group" onclick="modalOutClick(event)">
+            <div class="fundo_branco" id="modal_content">
             </div>
-        {% endif %}
+        </div>
 
     </div>
 {% endblock %}

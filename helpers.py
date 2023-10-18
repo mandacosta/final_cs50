@@ -25,8 +25,9 @@ def formate_list_of_groups(list, participants, id):
         for participant in participants:
             if participant['group_id'] == group['id']:
                 group['participants'].append(participant['user_id'])
-            if participant['user_id'] == id:
-                group['member'] = True
+                if participant['user_id'] == id:
+                    print(f"{participant['user_id']} é igual a {id} e pertence ao grupo {group['id']}")
+                    group['member'] = True
     
     return list_of_groups
 
