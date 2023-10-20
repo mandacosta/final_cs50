@@ -46,10 +46,9 @@
                       <p class="card-text">{{ group['description'] }}</p>
 
                       {% if group['owner'] or group['member']%}
-                        <div class="btn-cards one">
+                        <form action="/group/{{ group['id'] }}" method="get">
                             <button class="btn btn-warning">Enter</button>
-                        </div>
-
+                        </form>
                         {% else %}
                         <div class="btn-cards two">
                             <button class="btn btn-info" onclick="openModalGroup({{ group['id'] }})">View</button>

@@ -100,7 +100,7 @@ def home():
     db = get_db()
     cursor = db.cursor()
     # id = session["user_id"]
-    id = 1
+    id = 2
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     user = cursor.fetchone()
 
@@ -147,7 +147,7 @@ def new_group():
     db = get_db()
     cursor = db.cursor()
     # id = session["user_id"]
-    id = 1
+    id = 2
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     user = cursor.fetchone()
     date = date_now()
@@ -201,7 +201,7 @@ def join_group():
     db = get_db()
     cursor = db.cursor()
     # id = session["user_id"]
-    id = 1
+    id = 2
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     date = date_now()
 
@@ -213,6 +213,25 @@ def join_group():
     
     else:
         return redirect("/home")
+
+@app.route('/group/<group_id>', methods=['GET', 'POST'])
+def group(group_id):
+    db = get_db()
+    cursor = db.cursor()
+    print("group id", group_id)
+    # id = session["user_id"]
+    id = 2
+    cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
+    user = cursor.fetchone()
+
+    if request.method == 'GET':
+        cursor.execute("SELECT * FROM groups WHERE id = ?", (group_id, ))
+        groups = cursor.fetchall()
+        cursor.execute("SELECT * FROM groups_users")
+        participants_all = cursor.fetchall()
+        list_of_groups = formate_list_of_groups(groups, participants_all, id)
+        print("LISTA DE 1 GRUPO", list_of_groups)
+        return render_template("group.html", nav=True, user=user)
 
 
 def get_db():

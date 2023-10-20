@@ -53,6 +53,24 @@ cursor.execute("""
     )
 """)
 
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS gift_option (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        gift TEXT,
+        description TEXT
+    )
+""")
+
+cursor.execute("""
+    CREATE TABLE IF NOT EXISTS group_user_option (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        group_user_id INTEGER,
+        gift_option_id INTEGER,
+        FOREIGN KEY (group_user_id) REFERENCES groups_users(id),
+        FOREIGN KEY (gift_option_id) REFERENCES gift_option(id)
+    )
+""")
+
 
 connection.commit()
 connection.close()
