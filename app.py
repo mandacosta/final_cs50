@@ -2,6 +2,7 @@ from flask import Flask, session, render_template, request, g, redirect, jsonify
 from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
 from helpers import login_required, formate_list_of_groups, date_now
+import random
 
 app = Flask(__name__)
 
@@ -100,7 +101,7 @@ def home():
     db = get_db()
     cursor = db.cursor()
     # id = session["user_id"]
-    id = 2
+    id = 1
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     user = cursor.fetchone()
 
@@ -147,7 +148,7 @@ def new_group():
     db = get_db()
     cursor = db.cursor()
     # id = session["user_id"]
-    id = 2
+    id = 1
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     user = cursor.fetchone()
     date = date_now()
@@ -201,7 +202,7 @@ def join_group():
     db = get_db()
     cursor = db.cursor()
     # id = session["user_id"]
-    id = 2
+    id = 1
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     date = date_now()
 
@@ -218,20 +219,72 @@ def join_group():
 def group(group_id):
     db = get_db()
     cursor = db.cursor()
-    print("group id", group_id)
     # id = session["user_id"]
-    id = 2
+    id = 1
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     user = cursor.fetchone()
 
     if request.method == 'GET':
-        cursor.execute("SELECT * FROM groups WHERE id = ?", (group_id, ))
-        groups = cursor.fetchall()
-        cursor.execute("SELECT * FROM groups_users")
-        participants_all = cursor.fetchall()
-        list_of_groups = formate_list_of_groups(groups, participants_all, id)
-        print("LISTA DE 1 GRUPO", list_of_groups)
-        return render_template("group.html", nav=True, user=user)
+        cursor.execute("SELECT * FROM groups_users a JOIN users b ON a.user_id = b.id WHERE a.group_id = ?", (group_id, ))
+        participants = cursor.fetchall()
+
+        cursor.execute("SELECT id FROM groups_users WHERE group_id = ? AND user_id = ?", (group_id, id,))
+        group_user_id = cursor.fetchone()
+        
+        group_user_id = group_user_id['id']
+
+        cursor.execute("SELECT c.* FROM groups_users a JOIN group_user_option b ON a.id = b.group_user_id JOIN gift_option c ON c.id = b.gift_option_id WHERE a.id = ?", (group_user_id, ))
+        gift_options = cursor.fetchall()
+
+        cursor.execute("SELECT a.*, b.name as creator, b.email FROM groups a LEFT JOIN users b ON a.owner_id = b.id WHERE a.id = ?", (group_id, ))
+        group = cursor.fetchone()
+
+        # I am the "took" one and the person I retrieved is the "taken" one
+        cursor.execute("SELECT a.date, b.name, b.email, b.gender, b.birth FROM draw a JOIN users b ON a.taken_id = b.id WHERE a.took_id = ? AND a.group_id = ?", (id, group_id,))
+        draw = cursor.fetchone()
+
+        owner = group['owner_id'] == id
+
+        return render_template("group.html", nav=True, user=user, owner=owner, participants=participants, gift_options=gift_options, draw=draw, group=group)
+
+
+@app.route('/draw', methods=['GET', 'POST'])
+def draw():
+    db = get_db()
+    cursor = db.cursor()
+    date = date_now()
+
+    if request.method == 'POST':
+        print("ENTROU NO DRAW")
+        group_id = request.form.get("group_id")
+        cursor.execute("SELECT b.name, b.id FROM groups_users a JOIN users b ON a.user_id = b.id WHERE a.group_id = ?", (group_id, ))
+        part_all = cursor.fetchall()
+
+        if len(part_all) < 2:
+            return redirect(f"/group/{group_id}")
+        else:
+
+            part_list = [part for part in part_all]
+            random.shuffle(part_list)
+
+            print('LISTA EMBARALHADA', part_list)
+
+            for pessoa_atual, pessoa_seguinte in zip(part_list, part_list[1:]):
+                print("Pessoa Atual:", pessoa_atual["name"], pessoa_atual["id"])
+                print("Pessoa Seguinte:", pessoa_seguinte["name"], pessoa_seguinte["id"])
+                # Lógica para atribuir a pessoa seguinte à pessoa atual no amigo secreto
+                cursor.execute("INSERT INTO draw (group_id, took_id, taken_id, date) VALUES (?, ?, ?, ?)", (group_id, pessoa_atual["id"], pessoa_seguinte["id"], date, ))
+
+            # Lógica para atribuir o primeiro da lista ao último da lista no amigo secreto
+            last = part_list[-1]
+            first = part_list[0]
+            cursor.execute("INSERT INTO draw (group_id, took_id, taken_id, date) VALUES (?, ?, ?, ?)", (group_id, last["id"], first["id"], date, ))
+
+            db.commit()
+
+            return redirect(f"/group/{group_id}")
+    else:
+        return redirect(f"/group/{group_id}")
 
 
 def get_db():

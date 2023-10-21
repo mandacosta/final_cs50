@@ -6,7 +6,40 @@
 
 {% block main %}
     <div class="container_group">
-        <h1>Página do grupo selecionado</h1>
+        <h1>Group: {{group['name']}}</h1>
+
+        <div>Created by: {{group['creator']}} on {{group['creation_date']}}</div>
+
+        <div>
+            <div>
+                <h6>Event Date</h6>
+                <p>{{group['event_date']}}</p>
+            </div>
+            <div>
+                <h6>Draw Date (Forecast)</h6>
+                <p>{{group['draw_date']}}</p>
+            </div>
+        </div>
+
+        {% if draw['date'] %}
+            <div>Seu amigo secreto é {{draw['name']}}</div>
+        {% elif owner and not draw['date'] %}
+        <form action="/draw" method="post">
+            <input type="text" name="group_id" hidden value="{{ group['id'] }}">
+            <button type="submit">SORTEAR O AMIGO SECRETO</button>
+        </form>
+        {% else %}
+            <div>Aguarde o sorteio</div>         
+        {% endif %}
+
+        <ul>
+            {% for gift in gift_options %}
+                <li>
+                    <h6>{{gift['gift']}}</h6>
+                    <p>{{gift['description']}}</p>
+                </li>
+            {% endfor %}
+        </ul>
         
 
     </div>
