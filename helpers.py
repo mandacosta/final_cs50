@@ -13,7 +13,7 @@ def login_required(f):
     return decorated_function
 
 
-def formate_list_of_groups(list, participants, id):
+def formate_list_of_groups(list, participants, id, draws):
     print("USER ID", id)
     list_of_groups = [dict(row) for row in list]
 
@@ -21,6 +21,7 @@ def formate_list_of_groups(list, participants, id):
         group['participants'] = []
         group['owner'] = False
         group['member'] = False
+        group['draw'] = False
         if group['owner_id'] == id:
             group['owner'] = True
         for participant in participants:
@@ -29,7 +30,11 @@ def formate_list_of_groups(list, participants, id):
                 if participant['user_id'] == id:
                     print(f"{participant['user_id']} é igual a {id} e pertence ao grupo {group['id']}")
                     group['member'] = True
-    
+        
+        for draw in draws:
+            if draw['group_id'] == group['id']:
+                group['draw'] = True
+
     return list_of_groups
 
 

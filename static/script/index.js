@@ -62,10 +62,9 @@ async function openModalGroup(group_id){
     }
 }
 
-function modalOutClick(event){
+function modalOutClick(event, ele_id){
     console.log("target", event.target)
-    if(event.target.id == 'modal_group'){
+    if(event.target.id == ele_id){
         event.target.classList.add("hide")
     }
-
 }

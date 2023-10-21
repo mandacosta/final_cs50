@@ -32,15 +32,53 @@
             <div>Aguarde o sorteio</div>         
         {% endif %}
 
-        <ul>
-            {% for gift in gift_options %}
-                <li>
-                    <h6>{{gift['gift']}}</h6>
-                    <p>{{gift['description']}}</p>
-                </li>
-            {% endfor %}
-        </ul>
+        <div>
+            <h5>Gift options</h5>
+            {% if gift_options[0] %}
+                <ul>
+                    {% for gift in gift_options %}
+                        <li>
+                            <h6>{{gift['gift']}}</h6>
+                            <p>{{gift['description']}}</p>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>You haven't added an option yet!</p>
+            {% endif %}
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#new_gift_modal">Add an option</button>
+        </div>
+
+
         
 
+    </div>
+
+
+    <div class="modal fade" id="new_gift_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title fs-5" id="exampleModalLabel">What would you want to receive ?</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" class="body_modal_new_group">
+                <form action="/new_gift" method="post" class="new_group_form">
+                        <div class="form-floating">
+                            <input class="form-control" type="text" name="gift" placeholder="Your gift" required>
+                            <label for="email">Gift</label>
+                        </div>
+    
+                        <div class="mb-3">
+                            <textarea class="form-control" id="description" rows="3" name="description" placeholder="Describe your option" required></textarea>
+                        </div>
+
+                        <input hidden type="text" name="group_id" value="{{group['id']}}">
+    
+                        <button class="w-100 btn btn-lg btn-primary" type="submit">Send</button>
+                </form>
+            </div>
+        </div>
+        </div>
     </div>
 {% endblock %}

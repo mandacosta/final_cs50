@@ -59,7 +59,7 @@ def register():
 
 @app.route("/", methods=["GET", "POST"])
 def login():
-    return redirect("/home")
+    # return redirect("/home")
     db = get_db()
     cursor = db.cursor()
     session.clear()
@@ -94,23 +94,34 @@ def login():
         return redirect("/home")
     else:
         return render_template("login.html")
+    
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect('/')
 
 
 @app.route('/home', methods=["GET", "POST"])
 def home():
     db = get_db()
     cursor = db.cursor()
-    # id = session["user_id"]
-    id = 1
+    id = session["user_id"]
+    # id = 1
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     user = cursor.fetchone()
 
     if request.method == 'GET':
         cursor.execute("SELECT * FROM groups")
         groups = cursor.fetchall()
+
         cursor.execute("SELECT * FROM groups_users")
         participants_all = cursor.fetchall()
-        list_of_groups = formate_list_of_groups(groups, participants_all, id)
+
+        cursor.execute("SELECT DISTINCT group_id, date FROM draw")
+        draws = cursor.fetchall()
+
+        list_of_groups = formate_list_of_groups(groups, participants_all, id, draws)
 
         print("LISTA DE GRUPOS GET", list_of_groups)
 
@@ -120,6 +131,9 @@ def home():
         search = request.form.get("search")
         groups = []
         print("search", search)
+        cursor.execute("SELECT DISTINCT group_id, date FROM draw")
+        draws = cursor.fetchall()
+
         if not search:
             cursor.execute("SELECT * FROM groups")
             groups = cursor.fetchall()
@@ -135,7 +149,7 @@ def home():
         
         cursor.execute("SELECT * FROM groups_users")
         participants_all = cursor.fetchall()
-        list_of_groups = formate_list_of_groups(groups, participants_all, id)
+        list_of_groups = formate_list_of_groups(groups, participants_all, id, draws)
 
         print("LISTA DE GRUPOS POST", list_of_groups)
 
@@ -147,8 +161,8 @@ def home():
 def new_group():
     db = get_db()
     cursor = db.cursor()
-    # id = session["user_id"]
-    id = 1
+    id = session["user_id"]
+    # id = 1
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     user = cursor.fetchone()
     date = date_now()
@@ -201,8 +215,8 @@ def modal_group(group_id):
 def join_group():
     db = get_db()
     cursor = db.cursor()
-    # id = session["user_id"]
-    id = 1
+    id = session["user_id"]
+    # id = 1
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     date = date_now()
 
@@ -219,8 +233,8 @@ def join_group():
 def group(group_id):
     db = get_db()
     cursor = db.cursor()
-    # id = session["user_id"]
-    id = 1
+    id = session["user_id"]
+    # id = 1
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     user = cursor.fetchone()
 
@@ -235,6 +249,9 @@ def group(group_id):
 
         cursor.execute("SELECT c.* FROM groups_users a JOIN group_user_option b ON a.id = b.group_user_id JOIN gift_option c ON c.id = b.gift_option_id WHERE a.id = ?", (group_user_id, ))
         gift_options = cursor.fetchall()
+
+        print("******* OPÇÕES ******")
+        print(gift_options)
 
         cursor.execute("SELECT a.*, b.name as creator, b.email FROM groups a LEFT JOIN users b ON a.owner_id = b.id WHERE a.id = ?", (group_id, ))
         group = cursor.fetchone()
@@ -285,6 +302,33 @@ def draw():
             return redirect(f"/group/{group_id}")
     else:
         return redirect(f"/group/{group_id}")
+
+
+@app.route('/new_gift', methods=['GET', 'POST'])
+def new_gift():
+    db = get_db()
+    cursor = db.cursor()
+    id = session["user_id"]
+
+    if request.method == 'POST':
+        gift = request.form.get("gift")
+        description = request.form.get("description")
+        group_id = request.form.get("group_id")
+
+        cursor.execute("INSERT INTO gift_option (gift, description) VALUES (?, ?)", (gift, description, ))
+        db.commit()
+        gift_option_id = cursor.lastrowid
+
+        cursor.execute("SELECT * FROM groups_users WHERE group_id = ?  AND user_id = ?", (group_id, id, ))
+        group_user_id = cursor.fetchone()
+        group_user_id = group_user_id['id']
+
+        cursor.execute("INSERT INTO group_user_option (group_user_id, gift_option_id) VALUES (?, ?)", (group_user_id, gift_option_id, ))
+        db.commit()
+
+        return redirect(f"/group/{group_id}")
+    else:
+        ...
 
 
 def get_db():

@@ -35,33 +35,34 @@
             {% if groups %}
                 {% for group in groups %}
 
-                <div class="card" style="width: 18rem;">
-                    {% if group['image_url'] %}
-                        <img src="{{group['image_url']}}" class="card-img-top" alt="group_picture">
-                    {% else %}
-                        <img src="https://as1.ftcdn.net/v2/jpg/06/50/41/82/1000_F_650418284_gH1jJH1H9A0ErBxosY1f6ofyPrnCiFie.jpg" class="card-img-top" alt="">
-                    {% endif %}
-                    <div class="card-body">
-                      <h5 class="card-title">{{group['name'] }}</h5>
-                      <p class="card-text">{{ group['description'] }}</p>
-
-                      {% if group['owner'] or group['member']%}
-                        <form action="/group/{{ group['id'] }}" method="get">
-                            <button class="btn btn-warning">Enter</button>
-                        </form>
+                    <div class="card" style="width: 18rem;">
+                        {% if group['image_url'] %}
+                            <img src="{{group['image_url']}}" class="card-img-top" alt="group_picture">
                         {% else %}
-                        <div class="btn-cards two">
-                            <button class="btn btn-info" onclick="openModalGroup({{ group['id'] }})">View</button>
-                            <form action="/join_group" method="post">
-                                <input type="text" name="group_id" hidden value="{{ group['id'] }}">
-                                <button type="submit" class="btn btn-success">Join</button>
+                            <img src="https://as1.ftcdn.net/v2/jpg/06/50/41/82/1000_F_650418284_gH1jJH1H9A0ErBxosY1f6ofyPrnCiFie.jpg" class="card-img-top" alt="">
+                        {% endif %}
+                        <div class="card-body">
+                        <h5 class="card-title">{{group['name'] }}</h5>
+                        <p class="card-text">{{ group['description'] }}</p>
+
+                        {% if group['owner'] or group['member']%}
+                            <form action="/group/{{ group['id'] }}" method="get">
+                                <button class="btn btn-warning">Enter</button>
                             </form>
+                        {% elif group['draw'] %}
+                            <button type="submit" class="btn btn-success">Already drawn! </button>
+                        {% else %}
+                            <div class="btn-cards two">
+                                <button class="btn btn-info" onclick="openModalGroup({{ group['id'] }})">View</button>
+                                <form action="/join_group" method="post">
+                                    <input type="text" name="group_id" hidden value="{{ group['id'] }}">
+                                    <button type="submit" class="btn btn-success">Join</button>
+                                </form>
+                            </div>
+                        {% endif %}
+
                         </div>
-
-                      {% endif %}
-
                     </div>
-                </div>
 
                 {% endfor %}
 
@@ -110,10 +111,12 @@
             </div>
         </div>
 
-        <div class="hide info_grupo" id="modal_group" onclick="modalOutClick(event)">
+        <div class="hide info_grupo" id="modal_group" onclick="modalOutClick(event, 'modal_group')">
             <div class="fundo_branco" id="modal_content">
             </div>
         </div>
+
+
 
     </div>
 {% endblock %}
