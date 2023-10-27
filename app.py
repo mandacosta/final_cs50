@@ -239,6 +239,7 @@ def group(group_id):
     user = cursor.fetchone()
 
     if request.method == 'GET':
+        santa_gift_options = None
         cursor.execute("SELECT * FROM groups_users a JOIN users b ON a.user_id = b.id WHERE a.group_id = ?", (group_id, ))
         participants = cursor.fetchall()
 
@@ -249,20 +250,28 @@ def group(group_id):
 
         cursor.execute("SELECT c.* FROM groups_users a JOIN group_user_option b ON a.id = b.group_user_id JOIN gift_option c ON c.id = b.gift_option_id WHERE a.id = ?", (group_user_id, ))
         gift_options = cursor.fetchall()
-
-        print("******* OPÇÕES ******")
-        print(gift_options)
+        for option in gift_options:
+            print("id da opção", option['id'])
 
         cursor.execute("SELECT a.*, b.name as creator, b.email FROM groups a LEFT JOIN users b ON a.owner_id = b.id WHERE a.id = ?", (group_id, ))
         group = cursor.fetchone()
 
         # I am the "took" one and the person I retrieved is the "taken" one
-        cursor.execute("SELECT a.date, b.name, b.email, b.gender, b.birth FROM draw a JOIN users b ON a.taken_id = b.id WHERE a.took_id = ? AND a.group_id = ?", (id, group_id,))
+        cursor.execute("SELECT a.taken_id, a.date, b.name, b.email, b.gender, b.birth FROM draw a JOIN users b ON a.taken_id = b.id WHERE a.took_id = ? AND a.group_id = ?", (id, group_id,))
         draw = cursor.fetchone()
+
+        if draw['taken_id']:
+            cursor.execute("SELECT id FROM groups_users WHERE group_id = ? AND user_id = ?", (group_id, draw['taken_id'],))
+            group_taken_id = cursor.fetchone()
+            group_taken_id = group_taken_id['id']
+
+            cursor.execute("SELECT c.* FROM groups_users a JOIN group_user_option b ON a.id = b.group_user_id JOIN gift_option c ON c.id = b.gift_option_id WHERE a.id = ?", (group_taken_id, ))
+            santa_gift_options = cursor.fetchall()
+            print("OPÇÕES RUAN", santa_gift_options)
 
         owner = group['owner_id'] == id
 
-        return render_template("group.html", nav=True, user=user, owner=owner, participants=participants, gift_options=gift_options, draw=draw, group=group)
+        return render_template("group.html", nav=True, user=user, owner=owner, participants=participants, gift_options=gift_options, draw=draw, group=group, santa_gift_options=santa_gift_options)
 
 
 @app.route('/draw', methods=['GET', 'POST'])
@@ -304,8 +313,9 @@ def draw():
         return redirect(f"/group/{group_id}")
 
 
-@app.route('/new_gift', methods=['GET', 'POST'])
-def new_gift():
+@app.route('/new_gift/<gift_id>', methods=['GET', 'POST', 'DELETE'])
+@app.route('/new_gift/', methods=['GET', 'POST'])
+def new_gift(gift_id=None):
     db = get_db()
     cursor = db.cursor()
     id = session["user_id"]
@@ -327,7 +337,12 @@ def new_gift():
         db.commit()
 
         return redirect(f"/group/{group_id}")
-    else:
+    elif request.method == 'DELETE':
+        print('GIFT ID', gift_id)
+        
+        cursor.execute("DELETE FROM gift_option WHERE id = ?", (gift_id, ))
+        db.commit()
+        return jsonify(True)
         ...
 
 

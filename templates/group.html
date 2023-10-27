@@ -22,7 +22,7 @@
         </div>
 
         {% if draw['date'] %}
-            <div>Seu amigo secreto é {{draw['name']}}</div>
+            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#secret_santa_modal" onclick="animateSantaName()">Reveal Secret Santa</button>
         {% elif owner and not draw['date'] %}
         <form action="/draw" method="post">
             <input type="text" name="group_id" hidden value="{{ group['id'] }}">
@@ -37,9 +37,10 @@
             {% if gift_options[0] %}
                 <ul>
                     {% for gift in gift_options %}
-                        <li>
+                        <li id="option-{{gift['id']}}">
                             <h6>{{gift['gift']}}</h6>
                             <p>{{gift['description']}}</p>
+                            <div onclick="deleteGiftOption({{gift['id']}})"><i class="bi bi-trash3-fill"></i></div>
                         </li>
                     {% endfor %}
                 </ul>
@@ -55,11 +56,11 @@
     </div>
 
 
-    <div class="modal fade" id="new_gift_modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="new_gift_modal" tabindex="-1" aria-labelledby="" aria-hidden="true">
         <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-            <h5 class="modal-title fs-5" id="exampleModalLabel">What would you want to receive ?</h5>
+            <h5 class="modal-title fs-5" id="">What would you want to receive ?</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" class="body_modal_new_group">
@@ -78,6 +79,38 @@
                         <button class="w-100 btn btn-lg btn-primary" type="submit">Send</button>
                 </form>
             </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="secret_santa_modal" tabindex="-1" aria-labelledby="" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title fs-5" id="">Your secret santa is...</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" class="body_modal_secret_santa">
+                <div class="santa_name " id="santa_name">🎉 {{draw['name']}} 🎉</div>
+
+                {% if santa_gift_options %}
+                <div class="list_options">
+                    <h5>Here are some gift options</h5>
+                    <div class="list-group">
+                        {% for gift in santa_gift_options %}
+                            <li class="list-group-item" aria-current="true">
+                                <h5 class="mb-1">{{ gift['gift']}}</h5>
+                                <p class="mb-1">{{ gift['description']}}</p>
+                            </li>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% else %}
+                    <div class="no_gifts">No gift options yet :( </div>
+                {% endif %}
+
+            </div>
+
         </div>
         </div>
     </div>

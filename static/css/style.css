@@ -164,6 +164,49 @@
     border-radius: 5px;
 }
 
+.santa_name{
+    height: 60px;
+    font-weight: 900;
+}
+
+.text-element {
+    background: #000000;
+    color: transparent;
+    animation: changeColor 0.5s linear forwards;
+  }
+
+.list-group-item > h5{
+    text-align: initial;
+    font-size: 1.1rem !important;
+}
+
+.list-group-item > p{
+    text-align: initial;
+    font-size: 0.9rem !important;
+}
+
+.list_options{
+    margin-top: 15px;
+}
+
+.no_gifts{
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+  
+@keyframes changeColor {
+    0% {
+        font-size: 0.5rem;
+        color: transparent;
+    }
+    100% {
+        font-size: 2.5rem;
+        color: var(--bs-cyan);
+    }
+}
+  
 @keyframes slideIn {
     from {
         transform: translateX(100%);
