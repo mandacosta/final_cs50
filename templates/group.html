@@ -10,6 +10,18 @@
 
         <div>Created by: {{group['creator']}} on {{group['creation_date']}}</div>
 
+        {% if owner %}
+            <button>Delete group</button>
+        {% endif %}
+
+        {% if not draw['date'] and not owner %}
+        <form action="/leave_group/{{group['id']}}/0" method="post">
+            <button type="submit">Leave group</button>
+        </form>
+        {% endif %}
+
+
+
         <div>
             <div>
                 <h6>Event Date</h6>
@@ -24,12 +36,16 @@
         {% if draw['date'] %}
             <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#secret_santa_modal" onclick="animateSantaName()">Reveal Secret Santa</button>
         {% elif owner and not draw['date'] %}
-        <form action="/draw" method="post">
-            <input type="text" name="group_id" hidden value="{{ group['id'] }}">
-            <button type="submit">SORTEAR O AMIGO SECRETO</button>
-        </form>
+            {% if release_santa%}
+                <form action="/draw" method="post">
+                    <input type="text" name="group_id" hidden value="{{ group['id'] }}">
+                    <button type="submit">Draw Secret Santa!</button>
+                </form>
+            {% else %}
+                <button disabled>Not enough participants</button>
+            {% endif %}
         {% else %}
-            <div>Aguarde o sorteio</div>         
+            <div>Wait for the draw!</div>         
         {% endif %}
 
         <div>
@@ -50,9 +66,26 @@
             <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#new_gift_modal">Add an option</button>
         </div>
 
-
-        
-
+        <div>
+            <h5>Participants</h5>
+            {% if participants[0] %}
+            <ul>
+                {% for part in participants %}
+                    <li>
+                        <span>{{part['name']}} - {{part['email']}}</span>
+                        {% if owner %}
+                            <form action="/leave_group/{{group['id']}}/{{part['id']}}" method="post">
+                                <button type="submit"><span>Remove</span> <i class="bi bi-trash3-fill"></i></button>
+                            </form>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+                <p>No one yet !</p>
+            {% endif %}
+            
+        </div>
     </div>
 
 

@@ -162,13 +162,12 @@ def new_group():
     db = get_db()
     cursor = db.cursor()
     id = session["user_id"]
-    # id = 1
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     user = cursor.fetchone()
     date = date_now()
 
     if request.method == 'POST':
-
+        print("entrou no post")
         for input, value in request.form.items():
             if not value:
                 text = f"Error: {input} must me provided"
@@ -216,7 +215,6 @@ def join_group():
     db = get_db()
     cursor = db.cursor()
     id = session["user_id"]
-    # id = 1
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     date = date_now()
 
@@ -224,24 +222,47 @@ def join_group():
         group_id = request.form.get("group_id")
         cursor.execute("INSERT INTO groups_users (user_id, group_id, addtion_date) VALUES (?, ?, ?)", (id, group_id, date))
         db.commit()
-        return redirect("/home")
-    
+        return redirect("/home")   
     else:
+        ...
+
+@app.route('/leave_group/<group_id>/<user_id>', methods=['GET', 'POST'])
+def leave_group(group_id=None, user_id=None):
+    db = get_db()
+    cursor = db.cursor()
+    id = session["user_id"]
+
+    if user_id != '0':
+        # Owner deleting someone
+        print("entrou no if")
+        cursor.execute("DELETE FROM groups_users WHERE group_id = ? AND user_id = ?", (group_id, user_id,))
+        db.commit()
+        return redirect(f"/group/{group_id}")
+    else:
+        # Member deleting her/him self
+        print("entrou no else")
+        cursor.execute("DELETE FROM groups_users WHERE group_id = ? AND user_id = ?", (group_id, id,))
+        db.commit()
         return redirect("/home")
+
 
 @app.route('/group/<group_id>', methods=['GET', 'POST'])
 def group(group_id):
     db = get_db()
     cursor = db.cursor()
     id = session["user_id"]
-    # id = 1
     cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
     user = cursor.fetchone()
+    release_santa = False
 
     if request.method == 'GET':
         santa_gift_options = None
-        cursor.execute("SELECT * FROM groups_users a JOIN users b ON a.user_id = b.id WHERE a.group_id = ?", (group_id, ))
+        cursor.execute("SELECT b.* FROM groups_users a JOIN users b ON a.user_id = b.id WHERE a.group_id = ? AND a.user_id <> ?", (group_id, id))
         participants = cursor.fetchall()
+        
+        print("TAMANHO DO GRUPO", len(participants))
+        if len(participants) >= 2:
+            release_santa = True
 
         cursor.execute("SELECT id FROM groups_users WHERE group_id = ? AND user_id = ?", (group_id, id,))
         group_user_id = cursor.fetchone()
@@ -260,18 +281,18 @@ def group(group_id):
         cursor.execute("SELECT a.taken_id, a.date, b.name, b.email, b.gender, b.birth FROM draw a JOIN users b ON a.taken_id = b.id WHERE a.took_id = ? AND a.group_id = ?", (id, group_id,))
         draw = cursor.fetchone()
 
-        if draw['taken_id']:
-            cursor.execute("SELECT id FROM groups_users WHERE group_id = ? AND user_id = ?", (group_id, draw['taken_id'],))
-            group_taken_id = cursor.fetchone()
-            group_taken_id = group_taken_id['id']
+        if draw:
+            if draw['taken_id']:
+                cursor.execute("SELECT id FROM groups_users WHERE group_id = ? AND user_id = ?", (group_id, draw['taken_id'],))
+                group_taken_id = cursor.fetchone()
+                group_taken_id = group_taken_id['id']
 
-            cursor.execute("SELECT c.* FROM groups_users a JOIN group_user_option b ON a.id = b.group_user_id JOIN gift_option c ON c.id = b.gift_option_id WHERE a.id = ?", (group_taken_id, ))
-            santa_gift_options = cursor.fetchall()
-            print("OPÇÕES RUAN", santa_gift_options)
+                cursor.execute("SELECT c.* FROM groups_users a JOIN group_user_option b ON a.id = b.group_user_id JOIN gift_option c ON c.id = b.gift_option_id WHERE a.id = ?", (group_taken_id, ))
+                santa_gift_options = cursor.fetchall()
 
         owner = group['owner_id'] == id
 
-        return render_template("group.html", nav=True, user=user, owner=owner, participants=participants, gift_options=gift_options, draw=draw, group=group, santa_gift_options=santa_gift_options)
+        return render_template("group.html", nav=True, user=user, owner=owner, participants=participants, gift_options=gift_options, draw=draw, group=group, santa_gift_options=santa_gift_options, release_santa=release_santa)
 
 
 @app.route('/draw', methods=['GET', 'POST'])
@@ -281,7 +302,6 @@ def draw():
     date = date_now()
 
     if request.method == 'POST':
-        print("ENTROU NO DRAW")
         group_id = request.form.get("group_id")
         cursor.execute("SELECT b.name, b.id FROM groups_users a JOIN users b ON a.user_id = b.id WHERE a.group_id = ?", (group_id, ))
         part_all = cursor.fetchall()
@@ -293,7 +313,7 @@ def draw():
             part_list = [part for part in part_all]
             random.shuffle(part_list)
 
-            print('LISTA EMBARALHADA', part_list)
+            # print('LISTA EMBARALHADA', part_list)
 
             for pessoa_atual, pessoa_seguinte in zip(part_list, part_list[1:]):
                 print("Pessoa Atual:", pessoa_atual["name"], pessoa_atual["id"])
