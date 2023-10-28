@@ -357,12 +357,25 @@ def new_gift(gift_id=None):
         db.commit()
 
         return redirect(f"/group/{group_id}")
-    elif request.method == 'DELETE':
-        print('GIFT ID', gift_id)
-        
+    elif request.method == 'DELETE':       
         cursor.execute("DELETE FROM gift_option WHERE id = ?", (gift_id, ))
         db.commit()
         return jsonify(True)
+        ...
+
+
+@app.route('/profile', methods=['GET', 'POST'])
+def profile():
+    db = get_db()
+    cursor = db.cursor()
+    id = session["user_id"]
+    cursor.execute("SELECT * FROM users WHERE id = ?", (id,))
+    user = cursor.fetchone()
+
+    if request.method == 'GET':
+        return render_template('profile.html', nav=True, user=user)
+        ...
+    else:
         ...
 
 
