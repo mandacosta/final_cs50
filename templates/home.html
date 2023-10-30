@@ -22,7 +22,6 @@
                 </form>
             </div>
 
-            <!-- Button trigger modal -->
             <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 Create New Group!
             </button>
@@ -36,11 +35,7 @@
                 {% for group in groups %}
 
                     <div class="card" style="width: 18rem;">
-                        {% if group['image_url'] %}
-                            <img src="{{group['image_url']}}" class="card-img-top" alt="group_picture">
-                        {% else %}
-                            <img src="https://as1.ftcdn.net/v2/jpg/06/50/41/82/1000_F_650418284_gH1jJH1H9A0ErBxosY1f6ofyPrnCiFie.jpg" class="card-img-top" alt="">
-                        {% endif %}
+                        <img src="{{group['image_url']}}" onerror="this.src='https://media.istockphoto.com/id/1064095906/vector/concept-with-secret-santa.jpg?s=612x612&w=0&k=20&c=ghHVQl60J5d6ztBD6-EqpHmhR-4oCaIKSsxQ1CT57qA=';" class="card-img-top" alt="group_picture">
                         <div class="card-body">
                         <h5 class="card-title">{{group['name'] }}</h5>
                         <p class="card-text">{{ group['description'] }}</p>
@@ -115,8 +110,5 @@
             <div class="fundo_branco" id="modal_content">
             </div>
         </div>
-
-
-
     </div>
 {% endblock %}

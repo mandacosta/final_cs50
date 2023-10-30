@@ -8,20 +8,20 @@
     <div class="container_profile">
         <div class="profile_info">
             <h3>Personal information</h3>
-            <form action="" class="form initial">
+            <form action="/profile" class="form initial" method="post">
                 <div class="form-floating">
-                    <input required type="text" name="name" placeholder="Name" class="form-control" value="{{user['name']}}">
+                    <input required type="text" name="name" placeholder="Name" class="form-control input-profile" value="{{user['name']}}">
                     <label for="name">Full name</label>
                 </div>
         
                 <div class="form-floating">
-                    <input required type="email" name="email" placeholder="example@example.com" class="form-control" value="{{user['email']}}">
+                    <input required type="email" name="email" placeholder="example@example.com" class="form-control input-profile" value="{{user['email']}}">
                     <label for="email">Email</label>
                 </div>
         
         
                 <div class="form-floating">
-                    <select name="gender" id="" class="form-select" required>
+                    <select name="gender" id="" class="form-select input-profile" required>
                         <option value="M" {% if user['gender'] == 'M' %}selected{% endif %}>Male</option>
                         <option value="F" {% if user['gender'] == 'F' %}selected{% endif %}>Female</option>
                         <option value="O" {% if user['gender'] == 'O' %}selected{% endif %}>Other</option>
@@ -30,7 +30,7 @@
                 </div>
         
                 <div class="form-floating">
-                    <input required type="date" class="form-control" name="birthdate" value="{{user['birth']}}">
+                    <input required type="date" class="form-control input-profile" name="birthdate" value="{{user['birth']}}">
                     <label for="birth">Birthday</label>
                 </div>
                
@@ -50,17 +50,17 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" class="body_modal_change_password">
-                        <form action="/change_password" method="post" class="change_password_form form initial">
+                        <form action="/password" method="post" class="change_password_form form initial">
 
                             <div class="form-floating">
-                                <input type="password" class="form-control passRegister" placeholder="Your Password" name="password">
+                                <input type="password" class="form-control passRegister" placeholder="Your Password" name="oldPassword" required>
                                 <label for="password">Old Password</label>
                                 <i class="bi bi-eye-fill eye eyeR" onclick="togglePassword('passRegister', 'eyeR' ,'eyeRH')"></i>
                                 <i class="bi bi-eye-slash-fill eye eyeRH hide" onclick="togglePassword('passRegister', 'eyeR' ,'eyeRH')"></i>
                             </div>
                     
                             <div class="form-floating">
-                                <input type="password" class="form-control passConfirm" placeholder="Confirm Password" name="confirmPassword">
+                                <input type="password" class="form-control passConfirm" placeholder="Confirm Password" name="newPassword" required>
                                 <label for="password_conform">New Password</label>
                                 <i class="bi bi-eye-fill eye eyeC" onclick="togglePassword('passConfirm', 'eyeC' ,'eyeCH')"></i>
                                 <i class="bi bi-eye-slash-fill eye eyeCH hide" onclick="togglePassword('passConfirm', 'eyeC' ,'eyeCH')"></i>
@@ -72,8 +72,5 @@
                 </div>
             </div>
         </div>
-
-
-
     </div>
 {% endblock %}

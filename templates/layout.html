@@ -75,6 +75,15 @@
             </div>
         </div>
     {% endif%}
+
+    {% if success %}
+      <div class="alert alert-success toastElement" role="alert">
+          <div>
+            <i class="bi bi-check-circle-fill"></i>
+              <span>{{ text }}</span>
+          </div>
+      </div>
+    {% endif%}
     
     <script src="../static/script/index.js"></script>
 </html>

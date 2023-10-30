@@ -74,24 +74,3 @@ function animateSantaName(){
 
     santa.classList.add("text-element")
 }
-
-async function deleteGiftOption(gift_id){
-    try {
-        let resp = await fetch(`/new_gift/${gift_id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-
-        resp = await resp.json()
-
-        if(resp){
-            let card = document.getElementById(`option-${gift_id}`)
-            card.remove()
-        }
-        
-    } catch (error) {
-        console.error("Error deleteGiftOption", error)
-    }
-}
