@@ -40,12 +40,15 @@ async function openModalGroup(group_id){
         content.innerHTML = ''
 
         let title = document.createElement("h5")
+        title.classList.add("modal-members-title")
         title.innerHTML = resp.name
 
         let date = document.createElement("p")
+        date.classList.add("no-margin")
         date.innerHTML = `Draw date: <span>${resp.draw_date}</span>`
 
         let ul = document.createElement("ul")
+        ul.classList.add("members_list")
         resp.participants.forEach((member) => {
             let li = document.createElement("li")
             li.innerHTML = `<span>${member.name}</span> <span>${member.email}</span>`

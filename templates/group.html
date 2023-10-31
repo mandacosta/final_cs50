@@ -6,49 +6,42 @@
 
 {% block main %}
     <div class="container_group">
-        <h1>Group: {{group['name']}}</h1>
-
-        <div>Created by: {{group['creator']}} on {{group['creation_date']}}</div>
-
-        {% if owner and not draw['date'] %}
-            <form action="/delete_group/{{group['id']}}" method="post">
-                <button type="submit">Delete group</button>
-            </form>
-        {% endif %}
-
-        {% if not draw['date'] and not owner %}
-            <form action="/leave_group/{{group['id']}}/0" method="post">
-                <button type="submit">Leave group</button>
-            </form>
-        {% endif %}
-
-
-
         <div>
             <div>
-                <h6>Event Date</h6>
-                <p>{{group['event_date']}}</p>
+                <h1>Group: {{group['name']}}</h1>
+                <!-- button ou form ou div -->
+                {% if draw['date'] %}
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#secret_santa_modal" onclick="animateSantaName()">Reveal Secret Santa</button>
+                {% elif owner and not draw['date'] %}
+                    {% if release_santa%}
+                        <form action="/draw" method="post">
+                            <input type="text" name="group_id" hidden value="{{ group['id'] }}">
+                            <button type="submit">Draw Secret Santa!</button>
+                        </form>
+                    {% else %}
+                        <button disabled>Not enough participants</button>
+                    {% endif %}
+                {% else %}
+                    <div>Wait for the draw!</div>         
+                {% endif %}
+
             </div>
             <div>
-                <h6>Draw Date (Forecast)</h6>
-                <p>{{group['draw_date']}}</p>
+                <div>
+                    <h6>Created by</h6>
+                    <p>{{group['creator']}}</p>
+                </div>
+                <div>
+                    <h6>Event Date</h6>
+                    <p>{{group['event_date']}}</p>
+                </div>
+                <div>
+                    <h6>Draw Date (Forecast)</h6>
+                    <p>{{group['draw_date']}}</p>
+                </div>
             </div>
         </div>
 
-        {% if draw['date'] %}
-            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#secret_santa_modal" onclick="animateSantaName()">Reveal Secret Santa</button>
-        {% elif owner and not draw['date'] %}
-            {% if release_santa%}
-                <form action="/draw" method="post">
-                    <input type="text" name="group_id" hidden value="{{ group['id'] }}">
-                    <button type="submit">Draw Secret Santa!</button>
-                </form>
-            {% else %}
-                <button disabled>Not enough participants</button>
-            {% endif %}
-        {% else %}
-            <div>Wait for the draw!</div>         
-        {% endif %}
 
         <div>
             <h5>Gift options</h5>
@@ -90,6 +83,21 @@
                 <p>No one yet !</p>
             {% endif %}
             
+        </div>
+
+
+        <div>
+            {% if owner and not draw['date'] %}
+                <form action="/delete_group/{{group['id']}}" method="post">
+                    <button type="submit">Delete group</button>
+                </form>
+            {% endif %}
+
+            {% if not draw['date'] and not owner %}
+                <form action="/leave_group/{{group['id']}}/0" method="post">
+                    <button type="submit">Leave group</button>
+                </form>
+            {% endif %}
         </div>
     </div>
 

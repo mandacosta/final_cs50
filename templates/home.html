@@ -11,7 +11,7 @@
                 <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search">
                 <button class="btn btn-outline-success" type="submit">Search</button>
             </form>
-            <div class="d-flex search_groups_filter" style="width: 20%;">
+            <div class="d-flex search_groups_filter">
                 <form action="/home" method="post">
                     <input type="text" name="search" hidden value="groups_i_own">
                     <button type="submit" style="width: 100%;margin-left: 10px;" class="btn-tag" >I own</button>
@@ -23,7 +23,7 @@
             </div>
 
             <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                Create New Group!
+                New Group!
             </button>
 
         </div>
@@ -36,22 +36,22 @@
 
                     <div class="card" style="width: 18rem;">
                         <img src="{{group['image_url']}}" onerror="this.src='https://media.istockphoto.com/id/1064095906/vector/concept-with-secret-santa.jpg?s=612x612&w=0&k=20&c=ghHVQl60J5d6ztBD6-EqpHmhR-4oCaIKSsxQ1CT57qA=';" class="card-img-top" alt="group_picture">
-                        <div class="card-body">
+                        <div class="card-body home">
                         <h5 class="card-title">{{group['name'] }}</h5>
                         <p class="card-text">{{ group['description'] }}</p>
 
                         {% if group['owner'] or group['member']%}
                             <form action="/group/{{ group['id'] }}" method="get">
-                                <button class="btn btn-warning">Enter</button>
+                                <button class="btn btn-warning one">Enter</button>
                             </form>
                         {% elif group['draw'] %}
-                            <button type="submit" class="btn btn-success">Already drawn! </button>
+                            <button type="submit" class="btn btn-success one">Already drawn! </button>
                         {% else %}
                             <div class="btn-cards two">
-                                <button class="btn btn-info" onclick="openModalGroup({{ group['id'] }})">View</button>
-                                <form action="/join_group" method="post">
+                                <button class="btn btn-info btn-two" onclick="openModalGroup({{ group['id'] }})">View</button>
+                                <form action="/join_group" method="post" class="btn-two">
                                     <input type="text" name="group_id" hidden value="{{ group['id'] }}">
-                                    <button type="submit" class="btn btn-success">Join</button>
+                                    <button type="submit" class="btn btn-success one">Join</button>
                                 </form>
                             </div>
                         {% endif %}
