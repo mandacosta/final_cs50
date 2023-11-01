@@ -6,36 +6,36 @@
 
 {% block main %}
     <div class="container_group">
-        <div>
+        <div class="container_header_group">
             <div>
                 <h1>Group: {{group['name']}}</h1>
                 <!-- button ou form ou div -->
                 {% if draw['date'] %}
-                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#secret_santa_modal" onclick="animateSantaName()">Reveal Secret Santa</button>
+                <button type="button" class="btn btn-warning one" data-bs-toggle="modal" data-bs-target="#secret_santa_modal" onclick="animateSantaName()">Reveal Secret Santa</button>
                 {% elif owner and not draw['date'] %}
                     {% if release_santa%}
-                        <form action="/draw" method="post">
+                        <form action="/draw" method="post" style="width: 100%;">
                             <input type="text" name="group_id" hidden value="{{ group['id'] }}">
-                            <button type="submit">Draw Secret Santa!</button>
+                            <button type="submit" class="btn btn-warning one">Draw Secret Santa!</button>
                         </form>
                     {% else %}
-                        <button disabled>Not enough participants</button>
+                        <button disabled class="btn btn-warning one">Not enough participants</button>
                     {% endif %}
                 {% else %}
-                    <div>Wait for the draw!</div>         
+                    <div class="btn btn-warning one">Wait for the draw!</div>         
                 {% endif %}
 
             </div>
             <div>
-                <div>
+                <div class="info_group">
                     <h6>Created by</h6>
                     <p>{{group['creator']}}</p>
                 </div>
-                <div>
+                <div class="info_group">
                     <h6>Event Date</h6>
                     <p>{{group['event_date']}}</p>
                 </div>
-                <div>
+                <div class="info_group">
                     <h6>Draw Date (Forecast)</h6>
                     <p>{{group['draw_date']}}</p>
                 </div>
@@ -44,45 +44,47 @@
 
 
         <div>
-            <h5>Gift options</h5>
-            {% if gift_options[0] %}
+            <div class="container_header_group">
+                <h5>Gift options</h5>
+                {% if gift_options[0] %}
+                    <ul class="gift_options_list">
+                        {% for gift in gift_options %}
+                            <li id="option-{{gift['id']}}" class="option_card card">
+                                <h6 class="title_gift">{{gift['gift']}}</h6>
+                                <p class="description_gift">{{gift['description']}}</p>
+                                <form action="/new_gift/{{gift['id']}}" method="post" class="trash-icon">
+                                    <input hidden type="text" name="group_id" value="{{group['id']}}">
+                                    <button type="submit" class="trash-btn"><i class="bi bi-trash3-fill"></i></button>
+                                </form>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p>You haven't added an option yet!</p>
+                {% endif %}
+                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#new_gift_modal">Add an option</button>
+            </div>
+    
+            <div>
+                <h5>Participants</h5>
+                {% if participants[0] %}
                 <ul>
-                    {% for gift in gift_options %}
-                        <li id="option-{{gift['id']}}">
-                            <h6>{{gift['gift']}}</h6>
-                            <p>{{gift['description']}}</p>
-                            <form action="/new_gift/{{gift['id']}}" method="post">
-                                <input hidden type="text" name="group_id" value="{{group['id']}}">
-                                <button type="submit"><i class="bi bi-trash3-fill"></i></button>
-                            </form>
+                    {% for part in participants %}
+                        <li>
+                            <span>{{part['name']}} - {{part['email']}}</span>
+                            {% if owner and not draw['date']%}
+                                <form action="/leave_group/{{group['id']}}/{{part['id']}}" method="post">
+                                    <button type="submit"><span>Remove</span> <i class="bi bi-trash3-fill"></i></button>
+                                </form>
+                            {% endif %}
                         </li>
                     {% endfor %}
                 </ul>
-            {% else %}
-                <p>You haven't added an option yet!</p>
-            {% endif %}
-            <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#new_gift_modal">Add an option</button>
-        </div>
-
-        <div>
-            <h5>Participants</h5>
-            {% if participants[0] %}
-            <ul>
-                {% for part in participants %}
-                    <li>
-                        <span>{{part['name']}} - {{part['email']}}</span>
-                        {% if owner and not draw['date']%}
-                            <form action="/leave_group/{{group['id']}}/{{part['id']}}" method="post">
-                                <button type="submit"><span>Remove</span> <i class="bi bi-trash3-fill"></i></button>
-                            </form>
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-            {% else %}
-                <p>No one yet !</p>
-            {% endif %}
-            
+                {% else %}
+                    <p>No one yet !</p>
+                {% endif %}
+                
+            </div>
         </div>
 
 

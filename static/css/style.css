@@ -1,5 +1,7 @@
-*{
+ul{
     list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
 
@@ -242,9 +244,6 @@
 }
 
 .members_list{
-    list-style: none;
-    margin: 0;
-    padding: 0;
     text-align: initial;
 }
 
@@ -261,6 +260,71 @@
 
 .no-margin{
     margin: 0;
+}
+
+.container_header_group{
+    width: 100%;
+    padding: 0 10px 10px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.info_group{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.option_card{
+    height: fit-content;
+    position: relative;
+    width: 100%;
+    max-width: 350px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 10px;
+    text-align: initial;
+}
+
+.trash-icon{
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
+
+.title_gift{
+    width: 85%;
+    margin: 0;
+    max-height: 20px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.description_gift{
+    margin: 5px 0 0 0;
+    width: 90%;
+    white-space: wrap;
+    line-height: 28px;
+    text-align: justify;
+}
+
+.trash-btn{
+    cursor: pointer;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.gift_options_list{
+    display: flex;
+    flex-direction: column;
+    gap:10px;
 }
   
 @keyframes changeColor {
@@ -303,5 +367,14 @@
 
     .fundo_branco{
         scale: 1.3;
+    }
+
+    .gift_options_list{
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, 300px);
+        grid-template-rows: 80px 80px 80px;
+        grid-gap: 10px;
+        justify-content: space-between;
     }
 }
