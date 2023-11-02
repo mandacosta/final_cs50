@@ -7,26 +7,25 @@
 {% block main %}
     <div class="container_group">
         <div class="container_header_group">
-            <div>
+            <div class="header_group">
                 <h1>Group: {{group['name']}}</h1>
-                <!-- button ou form ou div -->
                 {% if draw['date'] %}
-                <button type="button" class="btn btn-warning one" data-bs-toggle="modal" data-bs-target="#secret_santa_modal" onclick="animateSantaName()">Reveal Secret Santa</button>
+                <button type="button" class="btn btn-warning one action" data-bs-toggle="modal" data-bs-target="#secret_santa_modal" onclick="animateSantaName()">Reveal Secret Santa</button>
                 {% elif owner and not draw['date'] %}
                     {% if release_santa%}
-                        <form action="/draw" method="post" style="width: 100%;">
+                        <form action="/draw" method="post" style="width: 100%;" class="action">
                             <input type="text" name="group_id" hidden value="{{ group['id'] }}">
-                            <button type="submit" class="btn btn-warning one">Draw Secret Santa!</button>
+                            <button type="submit" class="btn btn-info one">Draw Secret Santa!</button>
                         </form>
                     {% else %}
-                        <button disabled class="btn btn-warning one">Not enough participants</button>
+                        <button disabled class="btn btn-warning one action">Can't draw yet!</button>
                     {% endif %}
                 {% else %}
-                    <div class="btn btn-warning one">Wait for the draw!</div>         
+                    <div class="btn btn-secondary one action">Wait for the draw!</div>         
                 {% endif %}
 
             </div>
-            <div>
+            <div class="group_info">
                 <div class="info_group">
                     <h6>Created by</h6>
                     <p>{{group['creator']}}</p>
@@ -44,8 +43,8 @@
 
 
         <div>
-            <div class="container_header_group">
-                <h5>Gift options</h5>
+            <div class="container_gifts">
+                <h5>Your gift options</h5>
                 {% if gift_options[0] %}
                     <ul class="gift_options_list">
                         {% for gift in gift_options %}
@@ -54,27 +53,28 @@
                                 <p class="description_gift">{{gift['description']}}</p>
                                 <form action="/new_gift/{{gift['id']}}" method="post" class="trash-icon">
                                     <input hidden type="text" name="group_id" value="{{group['id']}}">
-                                    <button type="submit" class="trash-btn"><i class="bi bi-trash3-fill"></i></button>
+                                    <button type="submit" class="trash-btn btn btn-secondary"><i class="bi bi-trash3-fill"></i></button>
                                 </form>
                             </li>
                         {% endfor %}
                     </ul>
                 {% else %}
                     <p>You haven't added an option yet!</p>
+                    <img src="../static/images/lupa.jpeg" alt="" class="no_gifts">
                 {% endif %}
-                <button type="button" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#new_gift_modal">Add an option</button>
+                <button type="button" class="btn btn-primary add_gift" data-bs-toggle="modal" data-bs-target="#new_gift_modal">Add an option</button>
             </div>
     
-            <div>
+            <div style="padding: 20px 0;">
                 <h5>Participants</h5>
                 {% if participants[0] %}
-                <ul>
+                <ul class="participants_list">
                     {% for part in participants %}
                         <li>
                             <span>{{part['name']}} - {{part['email']}}</span>
                             {% if owner and not draw['date']%}
                                 <form action="/leave_group/{{group['id']}}/{{part['id']}}" method="post">
-                                    <button type="submit"><span>Remove</span> <i class="bi bi-trash3-fill"></i></button>
+                                    <button type="submit" class="btn btn-secondary"><i class="bi bi-trash3-fill"></i></button>
                                 </form>
                             {% endif %}
                         </li>
@@ -82,22 +82,22 @@
                 </ul>
                 {% else %}
                     <p>No one yet !</p>
-                {% endif %}
-                
+                    <img src="../static/images/no_people.jpeg" alt="" class="no_people">
+                {% endif %}               
             </div>
         </div>
 
 
-        <div>
+        <div class="bottom_action">
             {% if owner and not draw['date'] %}
                 <form action="/delete_group/{{group['id']}}" method="post">
-                    <button type="submit">Delete group</button>
+                    <button type="submit" class="btn btn-danger one"><strong>Delete group</strong></button>
                 </form>
             {% endif %}
 
             {% if not draw['date'] and not owner %}
                 <form action="/leave_group/{{group['id']}}/0" method="post">
-                    <button type="submit">Leave group</button>
+                    <button type="submit" class="btn btn-danger one"><strong>Leave group</strong></button>
                 </form>
             {% endif %}
         </div>
@@ -154,7 +154,8 @@
                     </div>
                 </div>
                 {% else %}
-                    <div class="no_gifts">No gift options yet :( </div>
+                    <div class="no_gifts_text">No gift options yet :( </div>
+                    <img src="../static/images/lupa.jpeg" alt="" class="no_gifts">
                 {% endif %}
 
             </div>

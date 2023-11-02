@@ -45,7 +45,7 @@
                                 <button class="btn btn-warning one">Enter</button>
                             </form>
                         {% elif group['draw'] %}
-                            <button type="submit" class="btn btn-success one">Already drawn! </button>
+                            <button class="btn btn-success one">Already drawn! </button>
                         {% else %}
                             <div class="btn-cards two">
                                 <button class="btn btn-info btn-two" onclick="openModalGroup({{ group['id'] }})">View</button>
