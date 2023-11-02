@@ -9,22 +9,22 @@ Have fun 💙
 
 #### Files Structure:
 Source:
-  - app.py: contains the Flask application and its routes
-  - helpers.py: login_required decorator to specify witch routes need a user looged in, formate_list_of_groups to organize list of members and useful information (like if the user is a owner or not)
-  - db_creation: contains the SQL querys for creating the database used
-  - database.db: it is the actual database file (can only be seen using a vscode extension like SQLite Viewer)
+  - app.py: This file serves as the core of our web application, housing the Flask framework and its corresponding routes, responsible for handling user requests and rendering appropriate responses.
+  - helpers.py: Within this file, you'll find a 'login_required' decorator, which defines the routes requiring user authentication. It also includes 'format_list_of_groups' to efficiently organize lists of members and pertinent information, such as user ownership status.
+  - db_creation: This module contains SQL queries essential for creating and initializing the database that our application relies on.
+  - database.db: This is the actual database file, housing all the structured data necessary for the application's functionality. It can be explored and manipulated using a compatible tool, such as a Visual Studio Code extension like SQLite Viewer.
 
 Templates:
-  - Contains the HTML files used for the diferent pages in the application
+  - This directory contains a collection of HTML files. These templates are responsible for generating the various pages presented to the user.
 
 Static:
-  - css: style sheets to make the web app prettier
-  - script: JavaScript functions to make the web app more dinamic
-  - images: .jpeg files used
+  - css: The cascading style sheets (CSS) are responsible for the design, layout, and overall aesthetics of the application.
+  - script: JavaScript functions that enhance the interactivity and dynamism of our web application
+  - images:  Here, you can find a collection of .jpeg files used within the application to enhance the visual elements and user experience.
 
 #### Main Techs
 - Python and Flask
 - sqlite and SQL
-- HTML, CSS and JavaScript
+- HTML, Jinja, CSS and JavaScript
 - Bootstrap
 - Pictures from: https://www.shutterstock.com/pt/search/no-results-icon
