@@ -2,7 +2,7 @@
 Final project for the CS50's course
 
 ## 🎁 Secret Santa !
-#### Video Demo:  <URL HERE>
+#### Video Demo:  https://www.youtube.com/watch?v=BUGKOqmBeXQ
 #### Description:
 Welcome to our web application, designed to facilitate the seamless creation of Secret Santa groups with your friends! With our platform, you can effortlessly set up a group, outlining its purpose, and even list your gift preferences for your Secret Santa to ensure a perfect surprise. As a group owner, you have full control, allowing you to draw the Secret Santa assignments, manage group members, and even delete the group itself. Start spreading the holiday joy and make your Secret Santa experience memorable with our user-friendly application!
 Have fun 💙
