@@ -300,6 +300,12 @@ def group(group_id):
     user = cursor.fetchone()
     release_santa = False
 
+    cursor.execute("SELECT * FROM groups_users WHERE user_id = ? AND group_id = ? ", (id, group_id))
+    member = cursor.fetchone()
+
+    if not member:
+        return redirect("/home")
+
     if request.method == 'GET':
         try:
             santa_gift_options = None
