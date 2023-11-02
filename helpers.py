@@ -14,7 +14,6 @@ def login_required(f):
 
 
 def formate_list_of_groups(list, participants, id, draws):
-    print("USER ID", id)
     list_of_groups = [dict(row) for row in list]
 
     for group in list_of_groups:
